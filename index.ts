@@ -1,16 +1,11 @@
 import express from "express";
 import { Request, Response } from "express"
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt"
 
 const app = express();
 const prisma = new PrismaClient()
 const PORT = process.env.PORT || 8000;
-
-const dummyUser = {
-  "publicId": "lethalspoons",
-  "password": "youCant%know#It"
-}
 
 app.use(
   express.json({
@@ -19,20 +14,23 @@ app.use(
 );
 
 app.post('/users', async (req: Request, res: Response) => {
-  const user = dummyUser
-  console.log(req)
-  if (user.password) {
-    const newUser = prisma.user.create({
+  const user = req.body
+  try {
+    const newUser =await prisma.user.create({
       data: {
         publicId: user.publicId,
         passwordHashAndSalt: await bcrypt.hash(user.password, 10),
       }
     })
+    console.log(newUser)
     res.json(newUser)
     return
-  }
-
-  res.status(500)
+  } catch(error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError)
+      if (error.code === "P2002") {
+        res.status(422).send({error, message: error.message})
+      }
+  };
 })
 
 
