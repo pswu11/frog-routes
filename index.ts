@@ -30,6 +30,7 @@ app.post('/users', async (req: Request, res: Response) => {
       if (error.code === "P2002") {
         res.status(422).send({error, message: error.message})
       }
+    res.status(500).send("Something unexpected went wrong.")
   };
 })
 
