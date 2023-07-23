@@ -28,6 +28,21 @@ export function UserModel() {
     queryParams: z.object({}),
   })
 
+  const userLoginModel = z.object({
+    body: z.union([
+      z.object({
+        public_id: z.string(),
+        password: z.string().max(25),
+      }),
+      z.object({
+        email: z.string().email(),
+        password: z.string().max(25),
+      }),
+    ]),
+    pathParams: z.object({}),
+    queryParams: z.object({}),
+  })
+
   app.post("/users", async (req: Request, res: Response) => {
     try {
       const { body: user } = userPostModel.parse({
@@ -79,6 +94,24 @@ export function UserModel() {
         })
         res.json(user)
         return
+      }
+    } catch (error) {
+      res.send(error)
+    }
+  })
+
+  app.post("/users/login", async (req: Request, res: Response) => {
+    try {
+      const { body: userLoginInfo } = userLoginModel.parse({
+        body: req.body,
+        pathParams: req.params,
+        queryParams: req.query,
+      })
+      if ("public_id" in userLoginInfo) {
+        // TODO: since i don't want to deal with GDPR just yet,
+        // users won't matter.
+        console.log(userLoginInfo.public_id)
+        res.send("OKEY!")
       }
     } catch (error) {
       res.send(error)

@@ -19,10 +19,11 @@ model User {
 model Project {
   id             String   @id @default(uuid())
   project_name   String
-  user_id        String
-  user           User     @relation(fields: [user_id], references: [id])
+  token          String   @unique
+  user_id        String?
+  user           User?    @relation(fields: [user_id], references: [id])
   routes         Route[]
-  create_at      DateTime
+  create_at      DateTime @default(now())
   last_active_at DateTime @updatedAt
 }
 

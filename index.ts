@@ -1,6 +1,7 @@
 import express from "express"
 import { PrismaClient } from "@prisma/client"
 import { UserModel } from "./modules/user"
+import { ProjectModel } from "./modules/project"
 
 const app = express()
 const prisma = new PrismaClient()
@@ -20,5 +21,6 @@ export { app }
 export { prisma }
 
 UserModel()
+ProjectModel()
 
 module.exports = app
