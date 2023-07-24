@@ -9,7 +9,7 @@
 
 #### Project
 
-- [ ] create projects
+- [x] create projects
 - [ ] view project details
 - [ ] delete project and all its routes
 - [ ] add creation and last used date to project (delete old ones)

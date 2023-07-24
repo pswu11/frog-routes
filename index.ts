@@ -1,7 +1,7 @@
 import express from "express"
 import { PrismaClient } from "@prisma/client"
-import { UserModel } from "./modules/user"
-import { ProjectModel } from "./modules/project"
+import { UserModule } from "./modules/user"
+import { ProjectModule } from "./modules/project"
 
 const app = express()
 const prisma = new PrismaClient()
@@ -20,7 +20,7 @@ app.listen(PORT, () => {
 export { app }
 export { prisma }
 
-UserModel()
-ProjectModel()
+UserModule()
+ProjectModule()
 
 module.exports = app

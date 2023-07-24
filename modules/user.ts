@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import { Prisma } from "@prisma/client"
 import { Request, Response } from "express"
 
-export function UserModel() {
+export function UserModule() {
   const userPostModel = z.object({
     body: z.object({
       public_id: z.string().min(3).max(20),
