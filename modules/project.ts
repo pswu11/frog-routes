@@ -4,6 +4,7 @@ import { createHash } from "crypto"
 import { z } from "zod"
 import { Prisma } from "@prisma/client"
 
+
 export function ProjectModule() {
   const projectPostModel = z.object({
     body: z.object({
@@ -48,7 +49,6 @@ export function ProjectModule() {
       res.status(500).send(`Something unexpected went wrong: ${error}`)
     }
   })
-
 
   app.get("/projects/:pid", async (req: Request, res: Response) => {
     try {

@@ -35,13 +35,14 @@ model Route {
   project    Project  @relation(fields: [project_id], references: [id])
   data       Storage?
   create_at  DateTime @default(now())
-  @@unique([path, verb])
+
+  @@unique([project_id, path, verb])
 }
 
 model Storage {
-  id        String   @id
-  data      Json
+  route_id        String   @id
+  payload   Json
   path_id   String   @unique
-  user      Route    @relation(fields: [path_id], references: [id])
+  route      Route    @relation(fields: [route_id], references: [id])
   create_at DateTime @default(now())
 }

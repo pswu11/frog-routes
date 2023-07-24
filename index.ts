@@ -2,6 +2,7 @@ import express from "express"
 import { PrismaClient } from "@prisma/client"
 import { UserModule } from "./modules/user"
 import { ProjectModule } from "./modules/project"
+import { RouteModule } from "./modules/routes"
 
 const app = express()
 const prisma = new PrismaClient()
@@ -22,5 +23,6 @@ export { prisma }
 
 UserModule()
 ProjectModule()
+RouteModule()
 
 module.exports = app

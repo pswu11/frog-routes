@@ -1,43 +1,49 @@
-import { Storage } from "@prisma/client"
 import { app, prisma } from "../index"
 import { Request, Response } from "express"
 import { z } from "zod"
 
 export function RouteModule() {
   const routePostModel = z.object({
-    body: z.object({
-      path: z.string().startsWith("/").regex(/[a-zA-Z0-9\/]/).min(3).max(30),
-      verb: z.string().toUpperCase().optional(),
-      payload: z.string()
-    }),
+    body: z.any(),
     pathParams: z.object({
-      pid: z.string().uuid()
+      pid: z.string().uuid(),
     }),
-    queryParams: z.object({})
+    queryParams: z.object({
+      path: z.string().startsWith("/").min(3).max(30),
+      verb: z.string().toUpperCase().optional(),
+    }),
   })
 
-  app.post("/projects/:pid", async (req: Request, res: Response) => {
+  app.post("/projects/:pid/routes", async (req: Request, res: Response) => {
     try {
-      const { body: routeInfo, pathParams } = routePostModel.parse({
+      const {
+        body: payloadData,
+        pathParams,
+        queryParams,
+      } = routePostModel.parse({
         body: req.body,
         pathParams: req.params,
-        queryParams: req.query
+        queryParams: req.query,
       })
+      console.log(payloadData, pathParams, queryParams)
       const newRoute = await prisma.route.create({
         data: {
           project_id: pathParams.pid,
-          path: routeInfo.path,
-          verb: routeInfo.verb ?? "GET"
-        }
+          path: queryParams.path,
+          verb: queryParams.verb ?? "GET",
+        },
       })
       const newPayload = await prisma.storage.create({
         data: {
-          id: pathParams.pid,
+          route_id: newRoute.id,
           path_id: newRoute.id,
-          data: routeInfo.payload
-        } as Storage
+          payload: payloadData,
+        },
       })
-      res.json(newRoute)
+      res.json({
+        ...newRoute,
+        payload: newPayload.payload,
+      })
     } catch (error) {
       res.send(`Something unexpected went wrong: ${error}`)
     }
