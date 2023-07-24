@@ -27,7 +27,7 @@ export function ProjectModule() {
         queryParams: req.query,
       })
       const token: string = createHash("sha256")
-        .update(projectInfo.project_name)
+        .update(`projectInfo.project_name${Date.now()}`)
         .digest("hex")
       console.log(token, projectInfo.project_name)
       const newProject = await prisma.project.create({
@@ -52,9 +52,20 @@ export function ProjectModule() {
 
   app.get("/projects/:pid", async (req: Request, res: Response) => {
     try {
-      const project = projectGetModel
-    } catch {
-
+      const { pathParams } = projectGetModel.parse({
+        body: req.body,
+        pathParams: req.params,
+        queryParams: req.query
+      })
+      const pid = pathParams.pid
+      const projectInfo = await prisma.project.findUnique({
+        where: {
+          id: pid
+        }
+      })
+      res.json(projectInfo)
+    } catch (error) {
+      res.send(error)
     }
   })
 }

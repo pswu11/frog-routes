@@ -30,10 +30,12 @@ model Project {
 model Route {
   id         String   @id @default(uuid())
   path       String
+  verb       String   @default("GET")
   project_id String
   project    Project  @relation(fields: [project_id], references: [id])
   data       Storage?
-  create_at  DateTime
+  create_at  DateTime @default(now())
+  @@unique([path, verb])
 }
 
 model Storage {
@@ -41,5 +43,5 @@ model Storage {
   data      Json
   path_id   String   @unique
   user      Route    @relation(fields: [path_id], references: [id])
-  create_at DateTime
+  create_at DateTime @default(now())
 }

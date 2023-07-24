@@ -4,3 +4,7 @@ Content-Type: application/json
 {
     "project_name": "frog-routes"
 }
+
+###
+
+GET http://localhost:8000/projects/2cda1459-195b-435f-94f6-9cb8d1436e9d HTTP/1.1
