@@ -4,10 +4,6 @@ import { app } from "../server"
 const PROJECT_ROUTE = "/projects"
 let PID = ""
 
-beforeAll(() => {
-  app.listen("8080");
-});
-
 describe("POST /projects", () => {
   test("should return a new project id", async () => {
     const res = await request(app).post(PROJECT_ROUTE).send({
@@ -36,5 +32,3 @@ describe("DELETE /projects/:pid", () => {
     expect(res.body).toBe(`Deleted project: ${PID}`)
   })
 })
-
-

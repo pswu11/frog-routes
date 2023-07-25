@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "testy": "jest --watch",
+    "testy": "jest --watchAll",
     "dev": "nodemon index.ts",
     "connectdb": "psql -h pg.neon.tech"
   },
