@@ -1,4 +1,8 @@
-POST http://localhost:8000/projects/2cda1459-195b-435f-94f6-9cb8d1436e9d/routes?path=/users&verb=delete HTTP/1.1
+@pid = b9588743-34cf-4451-afff-7897ce76869c
+
+
+###
+POST http://localhost:8000/projects/{{pid}}/routes?path=/users&verb=delete HTTP/1.1
 Content-Type: application/json
 
 {
@@ -8,10 +12,15 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8000/projects/2cda1459-195b-435f-94f6-9cb8d1436e9d/routes?path=/ussfe?rs&verb=delete HTTP/1.1
+POST http://localhost:8000/projects/{{pid}}/routes?path=/teams&verb=get HTTP/1.1
 Content-Type: application/json
 
 {
     "firstName": "Pei",
     "lastName": "Wu"
 }
+
+
+###
+
+GET http://localhost:8000/projects/{{pid}}/routes HTTP/1.1

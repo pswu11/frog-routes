@@ -4,7 +4,6 @@ import { createHash } from "crypto"
 import { z } from "zod"
 import { Prisma } from "@prisma/client"
 
-
 export function ProjectModule() {
   const projectPostModel = z.object({
     body: z.object({
@@ -14,9 +13,9 @@ export function ProjectModule() {
     queryParams: z.object({}),
   })
 
-  const projectGetModel = z.object({
+  const projectGetDeleteModel = z.object({
     body: z.object({}),
-    pathParams: z.object({pid: z.string().uuid()}),
+    pathParams: z.object({ pid: z.string().uuid() }),
     queryParams: z.object({}),
   })
 
@@ -52,20 +51,45 @@ export function ProjectModule() {
 
   app.get("/projects/:pid", async (req: Request, res: Response) => {
     try {
-      const { pathParams } = projectGetModel.parse({
+      const { pathParams } = projectGetDeleteModel.parse({
         body: req.body,
         pathParams: req.params,
-        queryParams: req.query
+        queryParams: req.query,
       })
       const pid = pathParams.pid
       const projectInfo = await prisma.project.findUnique({
         where: {
-          id: pid
-        }
+          id: pid,
+        },
       })
       res.json(projectInfo)
     } catch (error) {
-      res.send(error)
+      res.status(500).send(error)
+    }
+  })
+
+  app.delete("/projects/:pid", async (req: Request, res: Response) => {
+    try {
+      const { pathParams } = projectGetDeleteModel.parse({
+        body: req.body,
+        pathParams: req.params,
+        queryParams: req.query,
+      })
+      const pid = pathParams.pid
+      const projectInfo = await prisma.project.delete({
+        where: {
+          id: pid,
+        },
+      })
+      res.status(202).json({Deleted: projectInfo})
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          return res.status(400).send(error)
+        }
+        return res.status(400).send({"Prisma Error": error.message})
+      }
+      res.status(500).send("Unexpected error happened.")
     }
   })
 }

@@ -11,20 +11,19 @@
 
 - [x] create projects
 - [x] view project details
-- [ ] delete project and all its routes
+- [x] delete project and all its routes
 - [ ] add creation and last used date to project (delete old ones)
 
 #### Routes
 
 A route here means a path (e.g. /users) + verb (e.g. GET).
 
-- [ ] register a route for the project
-- [ ] view routes of the project
-- [ ] delete route from the project
+- [x] register a route for the project
+- [X] view routes of the project
+- [x] delete route (and linked data) from the project
 
 #### Auth
 - [ ] on project creation return bearer for later auth
-
 
 #### Others
 

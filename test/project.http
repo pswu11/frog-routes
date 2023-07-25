@@ -1,3 +1,8 @@
+@pid = b9588743-34cf-4451-afff-7897ce76869c
+
+
+###
+
 POST http://localhost:8000/projects HTTP/1.1
 Content-Type: application/json
 
@@ -7,4 +12,19 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/projects/2cda1459-195b-435f-94f6-9cb8d1436e9d HTTP/1.1
+POST http://localhost:8000/projects HTTP/1.1
+Content-Type: application/json
+
+{
+    "project_name": "my-movie-app"
+}
+
+###
+
+GET http://localhost:8000/projects/{{pid}}
+
+
+
+###
+
+DELETE http://localhost:8000/projects/{{pid}}

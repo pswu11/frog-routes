@@ -9,40 +9,40 @@ datasource db {
 
 model User {
   id            String    @id @default(uuid())
-  public_id     String    @unique
   password_hash String
   email         String?   @unique
-  projects      Project[]
+  public_id     String    @unique
   create_at     DateTime  @default(now())
+  projects      Project[]
 }
 
 model Project {
   id             String   @id @default(uuid())
   project_name   String
-  token          String   @unique
   user_id        String?
-  user           User?    @relation(fields: [user_id], references: [id])
-  routes         Route[]
   create_at      DateTime @default(now())
   last_active_at DateTime @updatedAt
+  token          String   @unique
+  user           User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  routes         Route[]
 }
 
 model Route {
   id         String   @id @default(uuid())
   path       String
-  verb       String   @default("GET")
   project_id String
-  project    Project  @relation(fields: [project_id], references: [id])
-  data       Storage?
   create_at  DateTime @default(now())
+  verb       String   @default("GET")
+  project    Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  data       Storage?
 
   @@unique([project_id, path, verb])
 }
 
 model Storage {
-  route_id        String   @id
-  payload   Json
   path_id   String   @unique
-  route      Route    @relation(fields: [route_id], references: [id])
   create_at DateTime @default(now())
+  payload   Json
+  route_id  String   @id
+  route     Route    @relation(fields: [route_id], references: [id], onDelete: Cascade)
 }
