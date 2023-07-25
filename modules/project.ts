@@ -1,10 +1,11 @@
-import { app, prisma } from "../index"
+import { prisma } from "../server"
 import { Request, Response } from "express"
 import { createHash } from "crypto"
 import { z } from "zod"
 import { Prisma } from "@prisma/client"
+import { Express } from "express"
 
-export function ProjectModule() {
+export function ProjectModule(app: Express) {
   const projectPostModel = z.object({
     body: z.object({
       project_name: z.string().min(3).max(20),
@@ -36,7 +37,7 @@ export function ProjectModule() {
           token,
         },
       })
-      res.json(newProject)
+      res.status(201).json({id: newProject.id})
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(typeof error)
@@ -62,7 +63,7 @@ export function ProjectModule() {
           id: pid,
         },
       })
-      res.json(projectInfo)
+      res.status(200).json(projectInfo)
     } catch (error) {
       res.status(500).send(error)
     }
@@ -81,7 +82,7 @@ export function ProjectModule() {
           id: pid,
         },
       })
-      res.status(202).json({"Deleted": projectInfo})
+      res.status(202).json(`Deleted project: ${projectInfo.id}`)
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {

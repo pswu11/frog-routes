@@ -1,8 +1,9 @@
-import { app, prisma } from "../index"
+import { prisma } from "../server"
 import { Request, Response } from "express"
 import { ZodError, z } from "zod"
+import { Express } from "express"
 
-export function RouteModule() {
+export function RouteModule(app: Express) {
   const routePostModel = z.object({
     body: z.any(),
     pathParams: z.object({

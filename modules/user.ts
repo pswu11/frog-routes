@@ -1,10 +1,11 @@
-import { app, prisma } from "../index"
+import { prisma } from "../server"
 import { z } from "zod"
 import bcrypt from "bcrypt"
 import { Prisma } from "@prisma/client"
 import { Request, Response } from "express"
+import { Express } from "express"
 
-export function UserModule() {
+export function UserModule(app: Express) {
   const userPostModel = z.object({
     body: z.object({
       public_id: z.string().min(3).max(20),
