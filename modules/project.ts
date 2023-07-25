@@ -81,7 +81,7 @@ export function ProjectModule() {
           id: pid,
         },
       })
-      res.status(202).json({Deleted: projectInfo})
+      res.status(202).json({"Deleted": projectInfo})
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {

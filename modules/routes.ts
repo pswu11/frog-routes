@@ -99,19 +99,12 @@ export function RouteModule() {
         queryParams: req.params
       })
 
-      const deletedStorage = await prisma.storage.delete({
-        where: {
-          route_id: routeInfo.routeId
-        }
-      })
-
       const deletedRoute = await prisma.route.delete({
         where: {
           id: routeInfo.routeId
         }
       })
-
-      res.json({deletedStorage, deletedRoute})
+      res.status(202).json({"Deleted": deletedRoute})
 
     } catch (error) {
       console.log(error)
