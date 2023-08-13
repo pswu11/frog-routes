@@ -1,4 +1,4 @@
-@pid = b9588743-34cf-4451-afff-7897ce76869c
+@pid = 799c9404-6a89-494f-b411-b60706b7e424
 
 
 ###
@@ -7,7 +7,16 @@ POST http://localhost:8000/projects HTTP/1.1
 Content-Type: application/json
 
 {
-    "project_name": "frog-routes"
+    "project_name": "frog-routes-test"
+}
+
+###
+
+POST https://frog-routes.fly.dev/projects HTTP/1.1
+Content-Type: application/json
+
+{
+    "project_name": "frog-routes-test"
 }
 
 ###
@@ -37,3 +46,8 @@ GET http://localhost:8000/projects/{{pid}}
 ###
 
 DELETE http://localhost:8000/projects/{{pid}}
+
+
+###
+
+DELETE https://frog-routes.fly.dev/projects/{{pid}}
