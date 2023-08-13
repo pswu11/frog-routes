@@ -1,7 +1,7 @@
 import { prisma } from "../server"
 import { Request, Response } from "express"
 import { createHash } from "crypto"
-import { ZodIssue, z } from "zod"
+import { z } from "zod"
 import { Prisma } from "@prisma/client"
 import { Express } from "express"
 
