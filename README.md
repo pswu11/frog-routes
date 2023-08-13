@@ -23,6 +23,7 @@ A route here means a path (e.g. /users) + verb (e.g. GET).
 - [x] delete route (and linked data) from the project
 
 #### Auth
+
 - [ ] on project creation return bearer for later auth
 
 #### Others
@@ -37,14 +38,13 @@ A route here means a path (e.g. /users) + verb (e.g. GET).
 - [ ] middleware that checks existence when pid given and 404's early
 - [ ] add user-defined status code (optional)
 - [ ] add user-defined content type (optional)
-- [ ] make general validation functions and move to sep. file (leading slash, field present)
+- [x] use zod for data validation
 - [ ] background job that deletes old projects
 - [ ] CORS middleware
 - [ ] update route endpoint
 - [ ] move db to docker volume forwarded to repo dir for persistence
-- [ ] add route data size limit (5M?)
-- [ ] Python API client
+- [x] add route data size limit (5M?)
 - [ ] swagger docs -> too much work
-- [ ] rate limit on state-changing endpoints
+- [x] rate limit on all requests
 - [ ] code documentation
 - [ ] proper readme file
