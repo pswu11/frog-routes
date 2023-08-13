@@ -1,5 +1,7 @@
 import request from "supertest"
 import { app } from "../server"
+import { ZodError } from "zod"
+import { randomUUID } from "crypto"
 
 const PROJECT_ROUTE = "/projects"
 let PID = ""
@@ -13,6 +15,15 @@ describe("POST /projects", () => {
     expect(res.body).toHaveProperty("id")
     PID = res.body.id
   })
+
+  test("should return a Zod error when project name has less than 3 charactor", async () => {
+    const res = await request(app).post(PROJECT_ROUTE).send({
+      project_name: "",
+    })
+    expect(res.statusCode).toBe(400)
+    expect(res.body).toHaveProperty("issues")
+    expect(res.body.issues[0]).toHaveProperty("code")
+  })
 })
 
 describe("GET /projects/:pid", () => {
@@ -21,6 +32,14 @@ describe("GET /projects/:pid", () => {
     const res = await request(app).get(`${PROJECT_ROUTE}/${PID}`)
     expect(res.statusCode).toBe(200)
     expect(res.body).toMatchObject(expect.objectContaining({id: PID}))
+  })
+
+  test("should return an error when id doesn't exist", async () => {
+    const randomPID = randomUUID()
+    console.log(randomPID)
+    const res = await request(app).get(`${PROJECT_ROUTE}/${randomPID}`)
+    expect(res.statusCode).toBe(404)
+    expect(res.body.message).toBe(`Project ID not found`)
   })
 })
 

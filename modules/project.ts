@@ -1,7 +1,7 @@
 import { prisma } from "../server"
 import { Request, Response } from "express"
 import { createHash } from "crypto"
-import { z } from "zod"
+import { ZodIssue, z } from "zod"
 import { Prisma } from "@prisma/client"
 import { Express } from "express"
 
@@ -37,15 +37,21 @@ export function ProjectModule(app: Express) {
           token,
         },
       })
-      res.status(201).json({id: newProject.id})
+      res.status(201).json({ id: newProject.id })
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(typeof error)
         if (error.code === "P2002") {
-          res.status(422).send({ error, message: error.message })
+          res.status(422).send({ error })
           return
         }
       }
+
+      if (error instanceof z.ZodError) {
+        res.status(400).send(error)
+        return
+      }
+
       res.status(500).send(`Something unexpected went wrong: ${error}`)
     }
   })
@@ -58,13 +64,21 @@ export function ProjectModule(app: Express) {
         queryParams: req.query,
       })
       const pid = pathParams.pid
-      const projectInfo = await prisma.project.findUnique({
+      const projectInfo = await prisma.project.findUniqueOrThrow({
         where: {
           id: pid,
         },
       })
       res.status(200).json(projectInfo)
     } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          res.status(404).send({ message: "Project ID not found"})
+          return
+        }
+        res.status(500).send({ "Prisma Error": error.message })
+        return
+      }
       res.status(500).send(error)
     }
   })
@@ -88,7 +102,7 @@ export function ProjectModule(app: Express) {
         if (error.code === "P2025") {
           return res.status(400).send(error)
         }
-        return res.status(400).send({"Prisma Error": error.message})
+        return res.status(400).send({ "Prisma Error": error.message })
       }
       res.status(500).send("Unexpected error happened.")
     }
