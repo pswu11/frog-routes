@@ -1,6 +1,5 @@
 import request from "supertest"
 import { app } from "../server"
-import { ZodError } from "zod"
 import { randomUUID } from "crypto"
 
 const PROJECT_ROUTE = "/projects"
@@ -22,6 +21,7 @@ describe("POST /projects", () => {
     })
     expect(res.statusCode).toBe(400)
     expect(res.body).toHaveProperty("issues")
+    expect(res.body.issues).toBeInstanceOf(Array)
     expect(res.body.issues[0]).toHaveProperty("code")
   })
 })

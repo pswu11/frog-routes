@@ -1,20 +1,19 @@
 # frog-routes
 
-
-### Database Diagram
+## Database Diagram
 
 (add later)
 
-### TODOS
+## TODOS
 
-#### Project
+### Project
 
 - [x] create projects
 - [x] view project details
 - [x] delete project and all its routes
 - [ ] add creation and last used date to project (delete old ones)
 
-#### Routes
+### Routes
 
 A route here means a path (e.g. /users) + verb (e.g. GET).
 
@@ -22,11 +21,11 @@ A route here means a path (e.g. /users) + verb (e.g. GET).
 - [X] view routes of the project
 - [x] delete route (and linked data) from the project
 
-#### Auth
+### Auth
 
 - [ ] on project creation return bearer for later auth
 
-#### Others
+### Others
 
 - [ ] static readme website hosted on root path
 - [ ] put resources and middlewares in separate files

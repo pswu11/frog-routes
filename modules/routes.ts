@@ -59,8 +59,8 @@ export function RouteModule(app: Express) {
           payload: payloadData,
         },
       })
-      res.json({
-        ...newRoute,
+      res.status(201).json({
+        route: newRoute,
         payload: newPayload.payload,
       })
     } catch (error) {
