@@ -37,7 +37,7 @@ export function ProjectModule(app: Express) {
           token,
         },
       })
-      res.status(201).json({ id: newProject.id })
+      res.status(201).json({ id: newProject.id, token: newProject.token })
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(typeof error)
@@ -96,7 +96,7 @@ export function ProjectModule(app: Express) {
           id: pid,
         },
       })
-      res.status(202).json(`Deleted project: ${projectInfo.id}`)
+      res.status(204).json(`Deleted project: ${projectInfo.id}`)
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {

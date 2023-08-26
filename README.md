@@ -38,6 +38,7 @@ A route here means a path (e.g. /users) + verb (e.g. GET).
 - [ ] add user-defined status code (optional)
 - [ ] add user-defined content type (optional)
 - [x] use zod for data validation
+- [ ] abstract data validation using `withValidation``
 - [ ] background job that deletes old projects
 - [ ] CORS middleware
 - [ ] update route endpoint
