@@ -47,7 +47,7 @@ describe("DELETE /projects/:pid", () => {
   test("should return a project object", async () => {
     console.log(`${PROJECT_ROUTE}/${PID}`)
     const res = await request(app).delete(`${PROJECT_ROUTE}/${PID}`)
-    expect(res.statusCode).toBe(202)
+    expect(res.statusCode).toBe(204)
     expect(res.body).toBe(`Deleted project: ${PID}`)
   })
 })

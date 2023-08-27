@@ -105,7 +105,7 @@ export function RouteModule(app: Express) {
           id: routeInfo.routeId
         }
       })
-      res.status(202).json({"Deleted": deletedRoute})
+      res.status(204).json({"Deleted": deletedRoute})
 
     } catch (error) {
       console.log(error)

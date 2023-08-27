@@ -8,7 +8,7 @@ import { Express } from "express"
 export function ProjectModule(app: Express) {
   const projectPostModel = z.object({
     body: z.object({
-      project_name: z.string().min(3).max(20),
+      name: z.string().min(3).max(20),
     }),
     pathParams: z.object({}),
     queryParams: z.object({}),
@@ -28,16 +28,16 @@ export function ProjectModule(app: Express) {
         queryParams: req.query,
       })
       const token: string = createHash("sha256")
-        .update(`projectInfo.project_name${Date.now()}`)
+        .update(`${projectInfo.name}${Date.now()}`)
         .digest("hex")
-      console.log(token, projectInfo.project_name)
+      console.log(token, projectInfo.name)
       const newProject = await prisma.project.create({
         data: {
-          project_name: projectInfo.project_name,
+          name: projectInfo.name,
           token,
         },
       })
-      res.status(201).json({ id: newProject.id, token: newProject.token })
+      res.status(201).json(newProject)
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         console.log(typeof error)
