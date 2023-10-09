@@ -5,11 +5,11 @@
 ### Create Project
 
 ```bash
-POST http://localhost:8000/projects HTTP/1.1
+POST {{api_url}}/projects HTTP/1.1
 Content-Type: application/json
 
 {
-    "project_name": "frog-routes"
+    "name": "frog-routes"
 }
 ```
 
@@ -28,20 +28,22 @@ Response body of a new project:
 
 ### Add routes to your project
 
+A route is where you mock your HTTP response, using combination of "path",
+"verb", "content_type", and "response_body": 
+
 ```bash
 POST http://localhost:8000/projects/{{pid}}/routes HTTP/1.1
 Content-Type: application/json
 
 {
-    path: "/users",
-    verb: "DELETE",
-    payload:
-        {
-            "firstName": "Pei",
-            "lastName": "Wu"
-        }
+    "path": "/users",
+    "verb": "DELETE",
+    "content_type": "applicaton/json",
+    "response_body": "{\"firstName\": \"Pei\", \"lastName\": \"Wu\"}"
 }
 ```
+
+(to be continued)
 
 ## TODOS
 
