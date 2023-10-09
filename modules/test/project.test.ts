@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../server"
+import { app } from "../../server"
 import { randomUUID } from "crypto"
 
 const PROJECT_ROUTE = "/projects"
@@ -31,7 +31,7 @@ describe("GET /projects/:pid", () => {
     console.log(`${PROJECT_ROUTE}/${PID}`)
     const res = await request(app).get(`${PROJECT_ROUTE}/${PID}`)
     expect(res.statusCode).toBe(200)
-    expect(res.body).toMatchObject(expect.objectContaining({id: PID}))
+    expect(res.body).toMatchObject(expect.objectContaining({ id: PID }))
   })
 
   test("should return an error when id doesn't exist", async () => {

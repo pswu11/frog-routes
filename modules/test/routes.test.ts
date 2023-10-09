@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../server"
+import { app } from "../../server"
 
 const PID = "82c1bce1-51a3-46b3-a66b-5802f141ccf4"
 let RouteID = ""
@@ -9,12 +9,12 @@ describe("POST /projects/PID", () => {
   const VERB = "GET"
   const PAYLOAD = [
     {
-      "userName": "test-user",
-      "email": "abc@example.com",
+      userName: "test-user",
+      email: "abc@example.com",
     },
     {
-      "userName": "test-admin",
-      "email": "admin@example.com",
+      userName: "test-admin",
+      email: "admin@example.com",
     },
   ]
   const PROJECT_PATH_ROUTE = `/projects/${PID}/routes?path=${PATH}&verb=${VERB}`
