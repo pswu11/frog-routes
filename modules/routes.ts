@@ -1,115 +1,111 @@
-import { prisma } from "../server"
 import { Request, Response } from "express"
-import { ZodError, z } from "zod"
 import { Express } from "express"
+import { routeGetSingle, routePost } from "./schema/route"
+import { prisma } from "../server"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { projectGet } from "./schema/project"
 
 export function RouteModule(app: Express) {
-  const routePostModel = z.object({
-    body: z.any(),
-    pathParams: z.object({
-      pid: z.string().uuid(),
-    }),
-    queryParams: z.object({
-      path: z.string().startsWith("/").min(3).max(30),
-      verb: z.string().toUpperCase().optional(),
-    }),
-  })
-
-  const getAllRoutesModel = z.object({
-    body: z.object({}),
-    pathParams: z.object({
-      pid: z.string().uuid(),
-    }),
-    queryParams: z.object({}),
-  })
-
-  const routeDeleteModel = z.object({
-    body: z.object({}),
-    pathParams: z.object({
-      pid: z.string().uuid(),
-      routeId: z.string().uuid()
-    }),
-    queryParams: z.object({}),
-  })
-
   // create a new route
   app.post("/projects/:pid/routes", async (req: Request, res: Response) => {
     try {
-      const {
-        body: payloadData,
-        pathParams,
-        queryParams,
-      } = routePostModel.parse({
+      const { body: routeInfo, pathParams: params } = routePost.parse({
         body: req.body,
         pathParams: req.params,
         queryParams: req.query,
       })
-      console.log(payloadData, pathParams, queryParams)
+
       const newRoute = await prisma.route.create({
         data: {
-          project_id: pathParams.pid,
-          path: queryParams.path,
-          verb: queryParams.verb ?? "GET",
+          path: routeInfo.path,
+          verb: routeInfo.verb,
+          project_id: params.pid,
         },
       })
-      const newPayload = await prisma.storage.create({
+
+      const newStorage = await prisma.storage.create({
         data: {
-          route_id: newRoute.id,
-          path_id: newRoute.id,
-          payload: payloadData,
+          id: newRoute.id,
+          payload: JSON.parse(routeInfo.response_body),
         },
       })
-      res.status(201).json({
-        route: newRoute,
-        payload: newPayload.payload,
-      })
+
+      console.log(newRoute, newStorage)
+      res.status(201).json({ ...newRoute, payload: newStorage.payload })
     } catch (error) {
-      if (error instanceof ZodError) {
-        res.json({title: "Invalid data in Zod", message: error.message})
+      if (error instanceof PrismaClientKnownRequestError) {
+        res.status(400).send({ error })
       }
-      res.send(`Something unexpected went wrong: ${error}`)
+      res.status(500).send(error)
     }
   })
 
-  // list all routes of a project
+  // list all routes
   app.get("/projects/:pid/routes", async (req: Request, res: Response) => {
     try {
-      const { pathParams } = getAllRoutesModel.parse({
+      const { pathParams: params } = projectGet.parse({
         body: req.body,
         pathParams: req.params,
-        queryParams: req.query
+        queryParams: req.query,
       })
-      const projectId = pathParams.pid
+
       const routes = await prisma.route.findMany({
         where: {
-          project_id: projectId
-        }
+          project_id: params.pid,
+        },
       })
-      console.table(routes)
-      res.json(routes)
+
+      res.status(200).json(routes)
     } catch (error) {
-      res.send(`Something unexpected went wrong: ${error}`)
+      res.status(500).send(error)
     }
   })
 
-  app.delete("/projects/:pid/routes/:routeId", async (req: Request, res: Response) => {
+  // get a route by id
+  app.get("/projects/:pid/routes/:rid", async (req: Request, res: Response) => {
     try {
-      const { pathParams: routeInfo } = routeDeleteModel.parse({
+      // TODO: validate project token with pid
+
+      const { pathParams: params } = routeGetSingle.parse({
         body: req.body,
         pathParams: req.params,
-        queryParams: req.params
+        queryParams: req.query,
       })
 
-      const deletedRoute = await prisma.route.delete({
+      const route = await prisma.route.findUnique({
         where: {
-          id: routeInfo.routeId
+          id: params.rid,
+        },
+        // include: {
+        //   response_body: true,
+        // }
+      })
+
+      res.status(200).json(route)
+    } catch (error) {
+      res.status(500).send(error)
+    }
+  })
+
+  // delete a route by id
+  app.delete("/projects/:pid/routes/:rid", async (req: Request, res: Response) => {
+    try {
+      // TODO: validate project token with pid
+
+      const { pathParams: params } = routeGetSingle.parse({
+        body: req.body,
+        pathParams: req.params,
+        queryParams: req.query,
+      })
+
+      const route = await prisma.route.delete({
+        where: {
+          id: params.rid,
         }
       })
-      res.status(204).json({"Deleted": deletedRoute})
-
+      res.status(200).json(route)
     } catch (error) {
-      console.log(error)
-      res.send(error)
+      res.status(500).send(error)
     }
   })
 

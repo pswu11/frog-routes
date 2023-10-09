@@ -1,8 +1,47 @@
 # frog-routes
 
-## Database Diagram
+## Usage
 
-(add later)
+### Create Project
+
+```bash
+POST http://localhost:8000/projects HTTP/1.1
+Content-Type: application/json
+
+{
+    "project_name": "frog-routes"
+}
+```
+
+Response body of a new project:
+
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "user_id": "uuid",
+  "created_at": "timestamp",
+  "last_active_at": "timestamp",
+  "token": "hash"
+}
+```
+
+### Add routes to your project
+
+```bash
+POST http://localhost:8000/projects/{{pid}}/routes HTTP/1.1
+Content-Type: application/json
+
+{
+    path: "/users",
+    verb: "DELETE",
+    payload:
+        {
+            "firstName": "Pei",
+            "lastName": "Wu"
+        }
+}
+```
 
 ## TODOS
 
@@ -18,7 +57,7 @@
 A route here means a path (e.g. /users) + verb (e.g. GET).
 
 - [x] register a route for the project
-- [X] view routes of the project
+- [x] view routes of the project
 - [x] delete route (and linked data) from the project
 
 ### Auth

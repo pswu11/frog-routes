@@ -18,7 +18,7 @@ model User {
 
 model Project {
   id             String   @id @default(uuid())
-  name   String
+  name           String
   user_id        String?
   create_at      DateTime @default(now())
   last_active_at DateTime @updatedAt
@@ -28,21 +28,20 @@ model Project {
 }
 
 model Route {
-  id         String   @id @default(uuid())
-  path       String
-  project_id String
-  create_at  DateTime @default(now())
-  verb       String   @default("GET")
-  project    Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  data       Storage?
+  id            String   @id @default(uuid())
+  path          String
+  verb          String?  @default("GET")
+  project_id    String
+  create_at     DateTime @default(now())
+  project       Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  content_type  String  @default("application/json")
+  response_body Storage?
 
   @@unique([project_id, path, verb])
 }
 
 model Storage {
-  path_id   String   @unique
-  create_at DateTime @default(now())
-  payload   Json
-  route_id  String   @id
-  route     Route    @relation(fields: [route_id], references: [id], onDelete: Cascade)
+  id      String @id
+  payload Json
+  route   Route  @relation(fields: [id], references: [id], onDelete: Cascade)
 }
