@@ -8,7 +8,7 @@ let PID = ""
 describe("POST /projects", () => {
   test("should return a new project id", async () => {
     const res = await request(app).post(PROJECT_ROUTE).send({
-      project_name: "test-project",
+      name: "test-project",
     })
     expect(res.statusCode).toBe(201)
     expect(res.body).toHaveProperty("id")
@@ -17,7 +17,7 @@ describe("POST /projects", () => {
 
   test("should return a Zod error when project name has less than 3 charactor", async () => {
     const res = await request(app).post(PROJECT_ROUTE).send({
-      project_name: "",
+      name: "",
     })
     expect(res.statusCode).toBe(400)
     expect(res.body).toHaveProperty("issues")
