@@ -4,6 +4,7 @@ import { routeGetSingle, routePost } from "./schema/route"
 import { prisma } from "../server"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { projectGet } from "./schema/project"
+import { Method } from "@prisma/client"
 
 export function RouteModule(app: Express) {
   // create a new route
@@ -18,20 +19,14 @@ export function RouteModule(app: Express) {
       const newRoute = await prisma.route.create({
         data: {
           path: routeInfo.path,
-          verb: routeInfo.verb,
+          verb: routeInfo.verb as Method,
           project_id: params.pid,
+          payload: routeInfo.payload,
         },
       })
 
-      const newStorage = await prisma.storage.create({
-        data: {
-          id: newRoute.id,
-          payload: JSON.parse(routeInfo.response_body),
-        },
-      })
-
-      console.log(newRoute, newStorage)
-      res.status(201).json({ ...newRoute, payload: newStorage.payload })
+      console.log(newRoute)
+      res.status(201).json(newRoute)
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         res.status(400).send({ error })

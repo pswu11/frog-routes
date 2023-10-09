@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Method {
+  GET
+  POST
+  PUT
+  DELETE
+}
+
 model User {
   id            String    @id @default(uuid())
   password_hash String
@@ -14,6 +21,8 @@ model User {
   public_id     String    @unique
   create_at     DateTime  @default(now())
   projects      Project[]
+
+  @@map("users")
 }
 
 model Project {
@@ -25,23 +34,20 @@ model Project {
   token          String   @unique
   user           User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   routes         Route[]
+
+  @@map("projects")
 }
 
 model Route {
   id            String   @id @default(uuid())
   path          String
-  verb          String?  @default("GET")
+  verb          Method  @default(GET)
   project_id    String
   create_at     DateTime @default(now())
   project       Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
   content_type  String  @default("application/json")
-  response_body Storage?
+  payload       String
 
   @@unique([project_id, path, verb])
-}
-
-model Storage {
-  id      String @id
-  payload Json
-  route   Route  @relation(fields: [id], references: [id], onDelete: Cascade)
+  @@map("routes")
 }
