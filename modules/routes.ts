@@ -115,8 +115,8 @@ export function RouteModule(app: Express) {
     }
   })
 
-  // user send a get request to a route
-  app.get("/projects/:pid/:path", async (req: Request, res: Response) => {
+  // user send a mock request to a route
+  app.all("/projects/:pid/:path", async (req: Request, res: Response) => {
     try {
       const verb = req.method as Method
       const { pathParams: params } = routeGetPayload.parse({
@@ -145,6 +145,7 @@ export function RouteModule(app: Express) {
       }
 
     } catch (error) {
+      console.log(error)
       res.status(500).send(error)
     }
   })

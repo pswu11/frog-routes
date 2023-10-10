@@ -1,6 +1,6 @@
 import express from "express"
 import { PrismaClient } from "@prisma/client"
-import { UserModule } from "./modules/user"
+import { UserModule } from "./.test/user"
 import { ProjectModule } from "./modules/project"
 import { RouteModule } from "./modules/routes"
 import rateLimit from 'express-rate-limit'
