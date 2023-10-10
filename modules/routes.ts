@@ -16,11 +16,22 @@ export function RouteModule(app: Express) {
         queryParams: req.query,
       })
 
+      // validate JSON payload
+      if (routeInfo.content_type === "application/json") {
+        try {
+          JSON.parse(routeInfo.payload)
+        } catch (error) {
+          res.status(400).send({ error: "Invalid JSON payload" })
+          return
+        }
+      }
+
       const newRoute = await prisma.route.create({
         data: {
           path: routeInfo.path,
           verb: routeInfo.verb as Method,
           project_id: params.pid,
+          content_type: !routeInfo.content_type ? "text/plain" : routeInfo.content_type,
           payload: routeInfo.payload,
         },
       })
@@ -123,11 +134,15 @@ export function RouteModule(app: Express) {
       })
 
       if (!route) {
-        res.status(404).send(`Route not found`)
+        res.status(404).send({ path: params.path, message: "Route not found" })
         return
       }
-      
-      res.status(200).send(route.payload)
+
+      if (route.content_type === "application/json") {
+        let payload = JSON.parse(route.payload)
+        console.log(payload)
+        res.status(200).send(payload)
+      }
 
     } catch (error) {
       res.status(500).send(error)

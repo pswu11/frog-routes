@@ -8,7 +8,7 @@ export const routeSchema = z.object({
     project_id: z.string().uuid(),
     content_type: z
       .string()
-      .regex(/^(application\/json|text\/html)$/)
+      .regex(/^(application\/json|text\/html|text\/plain)$/)
       .toLowerCase()
       .optional(),
     payload: z.string(),
@@ -30,6 +30,7 @@ export const routePost = z.object({
     path: true,
     verb: true,
     payload: true,
+    content_type: true,
   }),
   pathParams: z.object({
     pid: z.string().uuid(),
@@ -51,7 +52,7 @@ export const routeGetPayload = z.object({
   body: z.object({}),
   pathParams: z.object({
     pid: z.string().uuid(),
-    path: routeSchema.shape.body.shape.path,
+    path: z.string().transform((val) => "/".concat(val)),
   }),
   queryParams: z.object({}),
 })
