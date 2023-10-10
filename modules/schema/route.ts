@@ -12,6 +12,14 @@ export const routeSchema = z.object({
       .toLowerCase()
       .optional(),
     payload: z.string(),
+    // .refine((data) => {
+    //   try {
+    //     JSON.parse(data)
+    //   } catch (error) {
+    //     return false
+    //   }
+    //   return true
+    // }),
   }),
   pathParams: z.object({}),
   queryParams: z.object({}),
@@ -34,6 +42,16 @@ export const routeGetSingle = z.object({
   pathParams: z.object({
     pid: z.string().uuid(),
     rid: z.string().uuid(),
+  }),
+  queryParams: z.object({}),
+})
+
+
+export const routeGetPayload = z.object({
+  body: z.object({}),
+  pathParams: z.object({
+    pid: z.string().uuid(),
+    path: routeSchema.shape.body.shape.path,
   }),
   queryParams: z.object({}),
 })

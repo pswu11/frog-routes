@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { Express } from "express"
-import { routeGetSingle, routePost } from "./schema/route"
+import { routeGetPayload, routeGetSingle, routePost } from "./schema/route"
 import { prisma } from "../server"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { projectGet } from "./schema/project"
@@ -99,6 +99,36 @@ export function RouteModule(app: Express) {
         }
       })
       res.status(200).json(route)
+    } catch (error) {
+      res.status(500).send(error)
+    }
+  })
+
+  // user send a get request to a route
+  app.get("/projects/:pid/:path", async (req: Request, res: Response) => {
+    try {
+      const verb = req.method as Method
+      const { pathParams: params } = routeGetPayload.parse({
+        body: req.body,
+        pathParams: req.params,
+        queryParams: req.query,
+      })
+
+      const route = await prisma.route.findFirst({
+        where: {
+          project_id: params.pid,
+          path: params.path,
+          verb: verb,
+        },
+      })
+
+      if (!route) {
+        res.status(404).send(`Route not found`)
+        return
+      }
+      
+      res.status(200).send(route.payload)
+
     } catch (error) {
       res.status(500).send(error)
     }
